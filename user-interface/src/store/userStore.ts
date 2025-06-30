@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 type Role = "client" | "agent" | "admin" | null;
 
@@ -10,10 +11,17 @@ interface UserStore {
   logout: () => void;
 }
 
-export const useUserStore = create<UserStore>((set) => ({
-  token: null,
-  role: null,
-  username: null,
-  setUser: (token, role, username) => set({ token, role, username }),
-  logout: () => set({ token: null, role: null, username: null }),
-}));
+export const useUserStore = create<UserStore>()(
+  persist(
+    (set) => ({
+      token: null,
+      role: null,
+      username: null,
+      setUser: (token, role, username) => set({ token, role, username }),
+      logout: () => set({ token: null, role: null, username: null }),
+    }),
+    {
+      name: "user-storage",
+    }
+  )
+);
