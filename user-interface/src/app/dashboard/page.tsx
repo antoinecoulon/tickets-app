@@ -1,5 +1,14 @@
-import { redirect } from "next/navigation";
+"use client";
 
-export default function DashboardRoot() {
-  redirect("/dashboard/tickets");
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
+export default function DashboardHome() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/dashboard/tickets");
+  }, []);
+
+  return null;
 }
