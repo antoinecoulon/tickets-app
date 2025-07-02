@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tanstack/react-table": "^8.21.3",
     "axios": "^1.10.0",
+    "dayjs": "^1.11.13",
     "next": "15.3.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -3,40 +3,46 @@
 import api from "@/lib/axios";
 import { useUserStore } from "@/store/userStore";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function LoginPage() {
-    const [username, setUsername] = useState<string>("")
-    const [password, setPassword] = useState<string>("")
-    const [error, setError] = useState<string>("")
-    const router = useRouter()
-    const setUser = useUserStore((state) => state.setUser)
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const router = useRouter();
+  const setUser = useUserStore((state) => state.setUser);
 
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setError("")
-
-        try {
-            const tokenResponse = await api.post("/auth/token/", {
-                username,
-                password
-            })
-            
-             const access = tokenResponse.data.access
-
-             const userResponse = await api.get("/auth/credentials/", {
-                headers: {
-                    Authorization: `Bearer ${access}`
-                }
-             })
-
-             setUser(access, userResponse.data.role, userResponse.data.username)
-             router.push("/dashboard")
-        } catch (err: any) {
-            console.error(err)
-            setError("Identifiants incorrects")
-        }
+  useEffect(() => {
+    if (localStorage.getItem("user-storage")) {
+      router.push("/dashboard")
     }
+  }, [])
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    try {
+      const tokenResponse = await api.post("/auth/token/", {
+        username,
+        password,
+      });
+
+      const access = tokenResponse.data.access;
+
+      const userResponse = await api.get("/auth/credentials/", {
+        headers: {
+          Authorization: `Bearer ${access}`,
+        },
+      });
+
+      setUser(access, userResponse.data.role, userResponse.data.username);
+      router.push("/dashboard");
+    } catch (err: any) {
+      console.error(err);
+      setError("Identifiants incorrects");
+    }
+  };
 
   return (
     <div className="h-screen flex items-center justify-center bg-gray-100">
