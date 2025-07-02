@@ -3,9 +3,11 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  getSortedRowModel,
+  SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/fr"
 dayjs.locale("fr")
@@ -15,6 +17,8 @@ type Props = {
 };
 
 export default function TicketsTable({ data }: Props) {
+  const [sorting, setSorting] = useState<SortingState>([])
+  
   const columns = useMemo<ColumnDef<Ticket>[]>(
     () => [
       {
@@ -23,7 +27,11 @@ export default function TicketsTable({ data }: Props) {
       },
       {
         accessorKey: "titre",
-        header: "Titre",
+        header: ({ column }) => (
+          <button onClick={() => column.toggleSorting()}>
+            Titre {column.getIsSorted() === "asc" ? "↑" : column.getIsSorted() === "desc" ? "↓" : ""}
+          </button>
+        ),
       },
       {
         accessorKey: "description",
@@ -35,25 +43,43 @@ export default function TicketsTable({ data }: Props) {
       },
       {
         accessorKey: "priorite",
-        header: "Priorité",
+        header: ({ column }) => (
+          <button onClick={() => column.toggleSorting()}>
+            Priorité {column.getIsSorted() === "asc" ? "↑" : column.getIsSorted() === "desc" ? "↓" : ""}
+          </button>
+        ),
       },
       {
-        accessorKey: "createdAt",
-        header: "Créé le",
-        cell: ({ row }) => {
-          const raw = row.original.createdAt
-          const date = dayjs(raw)
-          return date.isValid() ? date.format("DD/MM/YYYY HH:mm") : "Date invalide"
-        }
-      },
-    ],
-    []
+        accessorKey: "created_at",
+        header: ({ column }) => (
+          <button onClick={() => column.toggleSorting()}>
+            Créé le {column.getIsSorted() === "asc" ? "↑" : column.getIsSorted() === "desc" ? "↓" : ""}
+          </button>
+        ),
+        cell: ({ getValue }) => {
+          const raw = getValue() as string;
+          const date = new Date(raw);
+          return date.toLocaleDateString("fr-FR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+        },
+      }
+    ], []
   );
 
   const table = useReactTable({
     data,
     columns,
+    state: {
+      sorting,
+    },
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
   });
 
   return (
