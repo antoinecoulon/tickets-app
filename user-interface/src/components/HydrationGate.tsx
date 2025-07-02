@@ -16,7 +16,7 @@ export default function HydrationGate({
     if (saved) {
       userStore.getState().setHydrated();
     } else {
-      console.error("🚫 Pas de session stockée");
+      console.log("🚫 Pas de session stockée");
     }
     setReady(true)
   }, []);
