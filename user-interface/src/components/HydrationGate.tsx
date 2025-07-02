@@ -16,7 +16,7 @@ export default function HydrationGate({
     if (saved) {
       userStore.getState().setHydrated();
     } else {
-      console.log("🚫 Pas de session stockée");
+      console.log("Local storage not loaded yet");
     }
     setReady(true)
   }, []);
