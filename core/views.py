@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from .models import Ticket, Message
@@ -21,6 +21,18 @@ class TicketViewSet(viewsets.ModelViewSet):
             return Ticket.objects.filter(client=user)
         return Ticket.objects.none()
     
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['statut', 'priorite']
+    search_fields = ['titre', 'description']
+    ordering_fields = ['created_at', 'priorite']
+    
+    def save(self, *args, **kwargs):
+        if self.statut:
+            self.statut = self.statut.lower()
+        if self.priorite:
+            self.priorite = self.priorite.lower()
+        super().save(*args, **kwargs)
+
     def perform_create(self, serializer):
         user = self.request.user
         if user.role != 'client':

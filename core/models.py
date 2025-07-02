@@ -23,8 +23,8 @@ class Ticket(models.Model):
 
     titre = models.CharField(max_length=255)
     description = models.TextField()
-    statut = models.CharField(max_length=20, choices=STATUT_CHOICES, default='Ouvert')
-    priorite = models.CharField(max_length=10, choices=PRIORITE_CHOICES, default='Moyenne')
+    statut = models.CharField(max_length=20, choices=STATUT_CHOICES, default='ouvert')
+    priorite = models.CharField(max_length=10, choices=PRIORITE_CHOICES, default='moyenne')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     client = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='tickets_clients')
