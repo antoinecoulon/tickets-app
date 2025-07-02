@@ -5,7 +5,7 @@ import HydrationGate from "@/components/HydrationGate";
 import Sidebar from "@/components/Sidebar";
 import { useUserStore } from "@/store/userStore";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function DashboardLayout({
   children,
@@ -15,11 +15,32 @@ export default function DashboardLayout({
   const router = useRouter()
   const token = useUserStore((state) => state.token)
 
-  useEffect(() => {    
-    if (!token) {
-      router.push("/login")
+  const [checked, setChecked] = useState(false)
+
+  useEffect(() => {
+    // Evite le 'flicker' du premier render (on ne sait pas encore si user logged)
+    if (token === null) {
+      setChecked(true)
+    } else if (token) {
+      setChecked(true)
     }
   }, [token])
+
+  useEffect(() => {    
+    if (checked && token === null) {
+      router.push("/login")
+    } else {
+      setChecked(true)  
+    }
+  }, [checked, token])
+
+  if (!checked) {
+    return (
+      <div className="h-screen w-screen flex items-center justify-center">
+        <span className="text-gray-600">Chargement...</span>  {/* TODO: loader */}
+      </div>
+    );
+  }
   
   return (
     <HydrationGate>

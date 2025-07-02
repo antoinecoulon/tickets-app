@@ -14,10 +14,9 @@ export default function HydrationGate({
     // Hack temporaire pour Zustand App Router
     const saved = localStorage.getItem("user-storage");
     if (saved) {
-      console.log("💾 localStorage detecté → hydration ok");
       userStore.getState().setHydrated();
     } else {
-      console.log("🚫 Pas de session stockée");
+      console.error("🚫 Pas de session stockée");
     }
     setReady(true)
   }, []);
