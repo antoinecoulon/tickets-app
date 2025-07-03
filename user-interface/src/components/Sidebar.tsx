@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import LogoutButton from "./LogoutButton";
 
 const navItems = [
   { name: "Tickets", path: "/dashboard/tickets" },
@@ -13,8 +14,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside>
-      <div></div>
+    <aside className="flex flex-col justify-between items-center py-2">
       <nav>
         {navItems.map((item) => (
           <Link
@@ -28,6 +28,7 @@ export default function Sidebar() {
           </Link>
         ))}
       </nav>
+      <LogoutButton />
     </aside>
   );
 }

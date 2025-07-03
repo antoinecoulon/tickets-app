@@ -29,6 +29,7 @@ export default function LoginPage() {
       });
 
       const access = tokenResponse.data.access;
+      const refresh = tokenResponse.data.refresh;
 
       const userResponse = await api.get("/auth/credentials/", {
         headers: {
@@ -36,7 +37,7 @@ export default function LoginPage() {
         },
       });
 
-      setUser(access, userResponse.data.role, userResponse.data.username);
+      setUser(access, refresh, userResponse.data.role, userResponse.data.username);
       router.push("/dashboard");
     } catch (err: any) {
       console.error(err);
