@@ -7,9 +7,14 @@ from rest_framework.response import Response
 @permission_classes([IsAuthenticated])
 def current_user(request):
     user = request.user
-    return Response({
+    data = {
         "username": user.username,
         "email": user.email,
         "role": user.role,
-        "entreprise": user.entreprise.nom,
-    })
+        "entreprise": {
+            'id': user.entreprise.id,
+            'nom': user.entreprise.nom
+        } if user.entreprise else None,
+    }
+
+    return Response(data)

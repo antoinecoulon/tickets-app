@@ -3,15 +3,39 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import LogoutButton from "./LogoutButton";
+import { useUserStore } from "@/store/userStore";
+import { useEffect, useState } from "react";
 
-const navItems = [
-  { name: "Tickets", path: "/dashboard/tickets" },
-  { name: "Messages", path: "/dashboard/messages" },
-  // TODO: Ajouter des liens selon le rôle
-];
+type NavItems = {
+  name: string;
+  path: string;
+};
+// TODO: Ajouter des liens selon le rôle
+// admin: tickets, messages, users (client + agent), entreprises
+  // flex colonne ^
+// client: mes tickets, mon entreprise
+// agent: tickets (de mon entreprise), mon entreprise
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const userRole = useUserStore((state) => state.role);
+  const [navItems, setNavItems] = useState<NavItems[]>([]);
+
+  useEffect(() => {
+    if (userRole === "admin") {
+      setNavItems([
+        { name: "Tickets", path: "/dashboard/tickets" },
+        { name: "Messages", path: "/dashboard/messages" },
+        { name: "Utilisateurs", path: "/dashboard/utilisateurs" },
+        { name: "Entreprises", path: "/dashboard/entreprises" },
+      ]);
+    } else {
+      setNavItems([
+        { name: "Tickets", path: "/dashboard/tickets" },
+        { name: "Entreprises", path: "/dashboard/entreprises" },
+      ]);
+    }
+  }, [userRole]);
 
   return (
     <aside className="flex flex-col justify-between items-center py-2">
