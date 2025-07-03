@@ -66,7 +66,9 @@ class MessageViewSet(viewsets.ModelViewSet):
         return Message.objects.filter(ticket__id=self.kwargs['ticket_pk']).order_by('created_at')
     
     def perform_create(self, serializer):
-        serializer.save(auteur=self.request.user, ticket_id=self.kwargs['ticket_pk'])
+        ticket_id = self.kwargs.get('ticket_pk')
+        ticket = Ticket.objects.get(id=ticket_id)
+        serializer.save(auteur=self.request.user, ticket=ticket, ticket_id=self.kwargs['ticket_pk'])
         
     def perform_update(self, serializer):
         user = self.request.user

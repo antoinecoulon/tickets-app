@@ -6,11 +6,14 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import Link from "next/link";
+import { Message } from "@/types/Message";
+import Messages from "./Messages";
 
 export default function TicketDetailsPage() {
   const router = useRouter();
   const { id } = useParams();
   const [ticket, setTicket] = useState<Ticket | null>(null);
+  const [messages, setMessages] = useState<Message[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -28,6 +31,19 @@ export default function TicketDetailsPage() {
 
     fetchTicket();
   }, [id]);
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const response = await api.get(`/tickets/${id}/messages/`)
+        setMessages(response.data.results)
+      } catch (err) {
+        console.error("Erreur lors du chargement des messages: ", err)
+      }
+    }
+
+    fetchMessages()
+  }, [id])
 
   if (isLoading) return <div>Chargement en cours...</div>; // TODO: loader
 
@@ -50,8 +66,8 @@ export default function TicketDetailsPage() {
         <p>
           <strong>Priorité :</strong> {ticket.priorite}
         </p>
-        {/* TODO <p><strong>Client :</strong> {ticket.client}</p>
-                <p><strong>Agent :</strong> {ticket.agent ?? "Non assigné"}</p> */}
+          <p><strong>Client :</strong> {ticket.client.username}</p>
+          <p><strong>Agent :</strong> {ticket.agent?.username ?? "Non assigné"}</p>
         <p>
           <strong>Créé le :</strong>{" "}
           {dayjs(ticket.createdAt).format("DD/MM/YYYY à HH:MM")}
@@ -66,12 +82,14 @@ export default function TicketDetailsPage() {
           </Link>
         </div>
       </div>
-
-      {/* TODO */}
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-2">Messages</h2>
-        <p className="text-gray-600">À implémenter à l’étape suivante</p>
-      </div>
-    </div>
+        
+          <Messages 
+            messages={messages}
+            setMessages={setMessages}
+            id={Number(id)}
+          />
+          
+          
+          </div>
   );
 }

@@ -1,15 +1,31 @@
 from rest_framework import serializers
 from .models import Ticket, Message
-from users.models import User
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+class UserSummarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email']
 
 class TicketSerializer(serializers.ModelSerializer):
+    client = UserSummarySerializer(read_only=True)
+    agent = UserSummarySerializer(read_only=True)
+    
     class Meta:
         model = Ticket
         fields = '__all__'
         read_only_fields = ['id', 'created_at', 'client']
 
+class AuteurSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username']
+
 class MessageSerializer(serializers.ModelSerializer):
+    auteur = AuteurSerializer(read_only=True)
     class Meta:
         model = Message
-        fields = ['id', 'contenu', 'created_at', 'auteur', 'auteur_username', 'ticket']
-        read_only_fields = ['id', 'created_at', 'auteur', 'auteur_username']
+        fields = ['id', 'contenu', 'created_at', 'auteur']
+        read_only_fields = ['id', 'created_at', 'auteur']
