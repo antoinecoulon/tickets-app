@@ -59,29 +59,14 @@ class TicketViewSet(viewsets.ModelViewSet):
         instance.delete()
 
 class MessageViewSet(viewsets.ModelViewSet):
-    queryset = Message.objects.all()
     serializer_class = MessageSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user = self.request.user
-        if user.role == 'admin':
-            return Message.objects.all()
-        elif user.role == 'client':
-            return Message.objects.filter(ticket__client=user)
-        elif user.role == 'agent':
-            return Message.objects.filter(ticket__client__entreprise=user.entreprise)
-        return Message.objects.none()
+        return Message.objects.filter(ticket__id=self.kwargs['ticket_pk']).order_by('created_at')
     
     def perform_create(self, serializer):
-        user = self.request.user
-        ticket = serializer.validated_data['ticket']
-
-        if user.role == 'client' and ticket.client != user:
-            raise PermissionDenied('Vous ne pouvez écrire que sur vos propres tickets.')
-        if user.role == 'agent' and ticket.client.entreprise != user.entreprise:
-            raise PermissionDenied('Vous ne pouvez écrire que sur les tickets de votre entreprise.')
-        serializer.save(auteur=user)
+        serializer.save(auteur=self.request.user, ticket_id=self.kwargs['ticket_pk'])
         
     def perform_update(self, serializer):
         user = self.request.user
@@ -94,5 +79,3 @@ class MessageViewSet(viewsets.ModelViewSet):
         if user.role != 'admin':
             raise PermissionDenied('Seul un administrateur peut supprimer un message.')
         instance.delete()
-
-# TODO: tester permissions
