@@ -1,8 +1,8 @@
 export type Ticket = {
     id: number
-    title: string
+    titre: string
     description: string
-    priority: string
-    status: string
+    priorite: string
+    statut: string
     createdAt: string
 }
