@@ -11,4 +11,5 @@ def current_user(request):
         "username": user.username,
         "email": user.email,
         "role": user.role,
+        "entreprise": user.entreprise.nom,
     })

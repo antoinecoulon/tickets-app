@@ -37,7 +37,7 @@ export default function LoginPage() {
         },
       });
 
-      setUser(access, refresh, userResponse.data.role, userResponse.data.username);
+      setUser(access, refresh, userResponse.data.role, userResponse.data.username, userResponse.data.entreprise);
       router.push("/dashboard");
     } catch (err: any) {
       console.error(err);

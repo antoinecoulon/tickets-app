@@ -8,12 +8,14 @@ interface UserStore {
   refreshToken: string | null;
   role: Role;
   username: string | null;
+  entreprise: string | null;
   isHydrated: boolean;
   setUser: (
     token: string,
     refreshToken: string,
     role: Role,
-    username: string
+    username: string,
+    entreprise: string,
   ) => void;
   logout: () => void;
   setHydrated: () => void;
@@ -26,9 +28,10 @@ export const userStore = createStore<UserStore>()(
       refreshToken: null,
       role: null,
       username: null,
+      entreprise: null,
       isHydrated: false,
-      setUser: (token, refreshToken, role, username) =>
-        set({ token, refreshToken, role, username }),
+      setUser: (token, refreshToken, role, username, entreprise) =>
+        set({ token, refreshToken, role, username, entreprise }),
       logout: () => {
         set({ token: null, role: null, username: null });
         localStorage.removeItem("user-storage");
