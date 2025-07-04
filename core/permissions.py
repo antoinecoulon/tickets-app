@@ -8,6 +8,13 @@ class IsAgent(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.role == 'agent'
     
+class IsAgentOrAdmin(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return (
+            request.user.is_authenticated and
+            (request.user.role == 'agent' or request.user.role == 'admin')
+        )
+    
 class IsClient(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.role == 'client'
@@ -29,6 +36,14 @@ class IsInSameCompanyAsTicket(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         return request.user.role == 'agent' and obj.client.entreprise == request.user.entreprise
     
+class IsOwnerOrSameCompany(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return (
+            request.user.role == 'admin'
+            or obj.client == request.user
+            or (request.user.role == 'agent' and obj.client.entreprise == request.user.entreprise)
+        )
+
 # MESSAGES
 class CanViewMessage(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
@@ -44,7 +59,3 @@ class CanViewMessage(permissions.BasePermission):
 class CanPostMessage(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated
-    
-    """ Empêche d’associer un message à un ticket non autorisé """
-    def has_object_permission(self, request, view, obj):
-        return True

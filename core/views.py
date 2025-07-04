@@ -1,15 +1,28 @@
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import IsAuthenticated, OR
 from .models import Ticket, Message
 from .serializers import TicketSerializer, MessageSerializer
-from .permissions import IsTicketOwnerOrAdmin, IsInSameCompanyAsTicket
+from .permissions import IsAdmin, IsClient, CanPostMessage, CanViewMessage, IsAgentOrAdmin, IsOwnerOrSameCompany
 
 class TicketViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
-    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['statut', 'priorite']
+    search_fields = ['titre', 'description']
+    ordering_fields = ['created_at', 'priorite']
+
+    def get_permissions(self):
+        if self.action  == 'create':
+            return [IsAuthenticated(), IsClient()]
+        elif self.action in ['update', 'partial_update']:
+            return [IsAuthenticated(), IsAgentOrAdmin()]
+        elif self.action == 'destroy':
+            return [IsAuthenticated(), IsAdmin()]
+        elif self.action == 'retrieve':
+            return [IsAuthenticated(), IsOwnerOrSameCompany()]
+        return [IsAuthenticated()]
 
     def get_queryset(self):
         user = self.request.user
@@ -20,47 +33,20 @@ class TicketViewSet(viewsets.ModelViewSet):
         elif user.role == 'client':
             return Ticket.objects.filter(client=user)
         return Ticket.objects.none()
-    
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['statut', 'priorite']
-    search_fields = ['titre', 'description']
-    ordering_fields = ['created_at', 'priorite']
-    
-    def save(self, *args, **kwargs):
-        if self.statut:
-            self.statut = self.statut.lower()
-        if self.priorite:
-            self.priorite = self.priorite.lower()
-        super().save(*args, **kwargs)
 
     def perform_create(self, serializer):
-        user = self.request.user
-        if user.role != 'client':
-            raise PermissionDenied('Seuls les clients peuvent créer des tickets.')
-        serializer.save(client=user)
-
-    def perform_update(self, serializer):
-        user = self.request.user
-        ticket = self.get_object()
-
-        if user.role == 'admin':
-            serializer.save()
-        elif user.role == 'agent':
-            if ticket.client.entreprise != user.entreprise:
-                raise PermissionDenied('Vous ne pouver modifier que les tickets de votre entreprise.')
-            serializer.save()
-        else:
-            raise PermissionDenied('Seuls les agents ou admin peuvent modifier un ticket.')
-        
-    def perform_destroy(self, instance):
-        user = self.request.user
-        if user.role != 'admin':
-            raise PermissionDenied('Seuls les administrateurs peuvent supprimer un ticket.')
-        instance.delete()
+        serializer.save(client=self.request.user)
 
 class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
-    permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return [IsAuthenticated(), CanPostMessage()]
+        elif self.action in ['update', 'destroy']:
+            return [IsAuthenticated(), IsAdmin()]
+        else:
+            return [IsAuthenticated(), CanViewMessage()]
 
     def get_queryset(self):
         return Message.objects.filter(ticket__id=self.kwargs['ticket_pk']).order_by('created_at')
@@ -69,15 +55,3 @@ class MessageViewSet(viewsets.ModelViewSet):
         ticket_id = self.kwargs.get('ticket_pk')
         ticket = Ticket.objects.get(id=ticket_id)
         serializer.save(auteur=self.request.user, ticket=ticket, ticket_id=self.kwargs['ticket_pk'])
-        
-    def perform_update(self, serializer):
-        user = self.request.user
-        if user.role != 'admin':
-            raise PermissionDenied('Seul un administrateur peut modifier un message.')
-        serializer.save()
-
-    def perform_destroy(self, instance):
-        user = self.request.user
-        if user.role != 'admin':
-            raise PermissionDenied('Seul un administrateur peut supprimer un message.')
-        instance.delete()

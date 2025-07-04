@@ -33,6 +33,13 @@ class Ticket(models.Model):
     def __str__(self):
         return self.titre
     
+    def save(self, *args, **kwargs):
+        if self.statut:
+            self.statut = self.statut.lower()
+        if self.priorite:
+            self.priorite = self.priorite.lower()
+        super().save(*args, **kwargs)
+    
 class Message(models.Model):
     contenu = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
