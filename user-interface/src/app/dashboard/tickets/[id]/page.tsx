@@ -8,6 +8,8 @@ import dayjs from "dayjs";
 import Link from "next/link";
 import { Message } from "@/types/Message";
 import Messages from "./Messages";
+import Badge from "@/components/Badge";
+import { getPrioriteLabel, getPrioriteStyle, getStatutLabel, getStatutStyle } from "@/utils/ticketsBadges";
 
 export default function TicketDetailsPage() {
   const router = useRouter();
@@ -61,10 +63,10 @@ export default function TicketDetailsPage() {
           <strong>Description :</strong> {ticket.description}
         </p>
         <p>
-          <strong>Statut :</strong> {ticket.statut}
+          <strong>Statut :</strong> <Badge label={getStatutLabel(ticket.statut)} className={getStatutStyle(ticket.statut)} />
         </p>
         <p>
-          <strong>Priorité :</strong> {ticket.priorite}
+          <strong>Priorité :</strong> <Badge label={getPrioriteLabel(ticket.priorite)} className={getPrioriteStyle(ticket.priorite)} />
         </p>
           <p><strong>Client :</strong> {ticket.client.username}</p>
           <p><strong>Agent :</strong> {ticket.agent?.username ?? "Non assigné"}</p>

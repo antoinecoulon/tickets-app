@@ -1,4 +1,6 @@
+import Badge from "@/components/Badge";
 import { Ticket } from "@/types/Ticket";
+import { getPrioriteLabel, getPrioriteStyle, getStatutLabel, getStatutStyle } from "@/utils/ticketsBadges";
 import {
   ColumnDef,
   flexRender,
@@ -14,8 +16,8 @@ type Props = {
 };
 
 export default function TicketsTable({ data }: Props) {
-  const [sorting, setSorting] = useState<SortingState>([])
-  
+  const [sorting, setSorting] = useState<SortingState>([]);
+
   const columns = useMemo<ColumnDef<Ticket>[]>(
     () => [
       {
@@ -26,7 +28,12 @@ export default function TicketsTable({ data }: Props) {
         accessorKey: "titre",
         header: ({ column }) => (
           <button onClick={() => column.toggleSorting()}>
-            Titre {column.getIsSorted() === "asc" ? "↑" : column.getIsSorted() === "desc" ? "↓" : ""}
+            Titre{" "}
+            {column.getIsSorted() === "asc"
+              ? "↑"
+              : column.getIsSorted() === "desc"
+              ? "↓"
+              : ""}
           </button>
         ),
       },
@@ -36,21 +43,52 @@ export default function TicketsTable({ data }: Props) {
       },
       {
         accessorKey: "statut",
-        header: "Statut",
+        header: ({ column }) => (
+          <button onClick={() => column.toggleSorting()}>
+            Statut{" "}
+            {column.getIsSorted() === "asc"
+              ? "↑"
+              : column.getIsSorted() === "desc"
+              ? "↓"
+              : ""}
+          </button>
+        ),
+        cell: ({ row }) => {
+          const value = row.getValue("statut") as string
+          return (
+            <Badge label={getStatutLabel(value)} className={getStatutStyle(value)} />
+          );
+        },
       },
       {
         accessorKey: "priorite",
         header: ({ column }) => (
           <button onClick={() => column.toggleSorting()}>
-            Priorité {column.getIsSorted() === "asc" ? "↑" : column.getIsSorted() === "desc" ? "↓" : ""}
+            Priorité{" "}
+            {column.getIsSorted() === "asc"
+              ? "↑"
+              : column.getIsSorted() === "desc"
+              ? "↓"
+              : ""}
           </button>
         ),
+        cell: ({ row }) => {
+          const value = row.getValue("priorite") as string;
+          return (
+            <Badge label={getPrioriteLabel(value)} className={getPrioriteStyle(value)} />
+          );
+        },
       },
       {
         accessorKey: "created_at",
         header: ({ column }) => (
           <button onClick={() => column.toggleSorting()}>
-            Créé le {column.getIsSorted() === "asc" ? "↑" : column.getIsSorted() === "desc" ? "↓" : ""}
+            Créé le{" "}
+            {column.getIsSorted() === "asc"
+              ? "↑"
+              : column.getIsSorted() === "desc"
+              ? "↓"
+              : ""}
           </button>
         ),
         cell: ({ getValue }) => {
@@ -64,8 +102,9 @@ export default function TicketsTable({ data }: Props) {
             minute: "2-digit",
           });
         },
-      }
-    ], []
+      },
+    ],
+    []
   );
 
   const table = useReactTable({
