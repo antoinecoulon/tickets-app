@@ -1,6 +1,6 @@
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested.routers import NestedDefaultRouter
-from .views import TicketViewSet, MessageViewSet
+from .views import TicketViewSet, MessageViewSet, AdminMessageListView
 from django.urls import path, include
 
 # Router principal
@@ -14,4 +14,5 @@ tickets_router.register(r'messages', MessageViewSet, basename='ticket-messages')
 urlpatterns = [
     path('', include(router.urls)),
     path('', include(tickets_router.urls)),
+    path('admin/messages/', AdminMessageListView.as_view(), name='admin-messages')
 ]
