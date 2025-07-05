@@ -2,8 +2,9 @@ from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListAPIView
-from .models import Ticket, Message
-from .serializers import TicketSerializer, MessageSerializer
+from .models import Ticket, Message, Entreprise
+from users.models import User
+from .serializers import TicketSerializer, MessageSerializer, AdminUtilisateursListSerializer, EntrepriseSerializer
 from .permissions import IsAdmin, IsClient, CanPostMessage, CanViewMessage, IsAgentOrAdmin, IsOwnerOrSameCompany
 
 class TicketViewSet(viewsets.ModelViewSet):
@@ -57,7 +58,19 @@ class MessageViewSet(viewsets.ModelViewSet):
         ticket = Ticket.objects.get(id=ticket_id)
         serializer.save(auteur=self.request.user, ticket=ticket, ticket_id=self.kwargs['ticket_pk'])
 
+# TODO: refactoring
+
 class AdminMessageListView(ListAPIView):
     permission_classes = [IsAdmin]
     serializer_class = MessageSerializer
     queryset = Message.objects.all().order_by('created_at')
+
+class AdminUtilisateursListView(ListAPIView):
+    permission_classes = [IsAdmin]
+    serializer_class = AdminUtilisateursListSerializer
+    queryset = User.objects.all().order_by('role')
+
+class AdminEntrepriseListView(ListAPIView):
+    permission_classes = [IsAdmin]
+    serializer_class = EntrepriseSerializer
+    queryset = Entreprise.objects.all()

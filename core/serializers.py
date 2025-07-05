@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Ticket, Message
+from .models import Ticket, Message, Entreprise
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -29,3 +29,14 @@ class MessageSerializer(serializers.ModelSerializer):
         model = Message
         fields = ['id', 'contenu', 'created_at', 'auteur']
         read_only_fields = ['id', 'created_at', 'auteur']
+
+class EntrepriseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Entreprise
+        fields = ['id', 'nom']
+
+class AdminUtilisateursListSerializer(serializers.ModelSerializer):
+    entreprise = EntrepriseSerializer(read_only=True)
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'role', 'entreprise']
