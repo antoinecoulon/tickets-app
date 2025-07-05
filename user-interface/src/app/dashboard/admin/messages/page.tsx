@@ -1,47 +1,47 @@
 "use client"
 
 import api from "@/lib/axios";
-import { Entreprise } from "@/types/Entreprise";
+import { Message } from "@/types/Message";
 import { useEffect, useState } from "react";
-import EntreprisesTable from "./EntreprisesTable";
+import MessagesTable from "./MessagesTable";
 
-export default function AdminEntreprisesPage() {
-    const [entreprises, setEntreprises] = useState<Entreprise[]>([]);
-    const [page, setPage] = useState(1);
+export default function MessagesPage() {
+    const [messages, setMessages] = useState<Message[]>([])
+    const [page, setPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        const fetchEntreprises = async () => {
+        const fetchMessages = async () => {
             setLoading(true)
 
             try {
                 const params = new URLSearchParams();
                 params.append("page", String(page));
                 
-                const { data } = await api.get(`/admin/entreprises/?${params.toString()}`)
+                const { data } = await api.get(`/admin/messages/?${params.toString()}`)
                 
-                setEntreprises(data.results)
+                setMessages(data.results)
                 setTotalPages(Math.ceil(data.count / 10))
             } catch (err) {
-                console.error("Erreur lors du chargement des entreprises: ", err)
+                console.error("Erreur lors du chargement des messages: ", err)
             } finally {
                 setLoading(false)
             }
         }
 
-        fetchEntreprises()
+        fetchMessages()
     }, [page])
 
     return (
     <div className="p-4">
-      <h2 className="text-xl font-semibold mb-4">Liste des entreprises</h2>
+      <h2 className="text-xl font-semibold mb-4">Liste des messages</h2>
 
       {loading ? (
-        <div>Chargement des entreprises...</div> // TODO: loader visuel
+        <div>Chargement des messages...</div> // TODO: loader visuel
       ) : (
         <>
-          <EntreprisesTable data={entreprises} />
+          <MessagesTable data={messages} />
 
           <div className="flex justify-around gap-2 mt-4">
             <button

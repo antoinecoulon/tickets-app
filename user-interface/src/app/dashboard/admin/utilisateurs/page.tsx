@@ -1,47 +1,47 @@
 "use client"
 
 import api from "@/lib/axios";
-import { Entreprise } from "@/types/Entreprise";
+import { User } from "@/types/User";
 import { useEffect, useState } from "react";
-import EntreprisesTable from "./EntreprisesTable";
+import UsersTable from "./UsersTable";
 
-export default function AdminEntreprisesPage() {
-    const [entreprises, setEntreprises] = useState<Entreprise[]>([]);
-    const [page, setPage] = useState(1);
+export default function MessagesPage() {
+    const [users, setUsers] = useState<User[]>([])
+    const [page, setPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        const fetchEntreprises = async () => {
+        const fetchUsers = async () => {
             setLoading(true)
 
             try {
                 const params = new URLSearchParams();
                 params.append("page", String(page));
                 
-                const { data } = await api.get(`/admin/entreprises/?${params.toString()}`)
+                const { data } = await api.get(`/admin/users/?${params.toString()}`)
                 
-                setEntreprises(data.results)
+                setUsers(data.results)
                 setTotalPages(Math.ceil(data.count / 10))
             } catch (err) {
-                console.error("Erreur lors du chargement des entreprises: ", err)
+                console.error("Erreur lors du chargement des utilisateurs: ", err)
             } finally {
                 setLoading(false)
             }
         }
 
-        fetchEntreprises()
+        fetchUsers()
     }, [page])
 
     return (
     <div className="p-4">
-      <h2 className="text-xl font-semibold mb-4">Liste des entreprises</h2>
+      <h2 className="text-xl font-semibold mb-4">Liste des messages</h2>
 
       {loading ? (
-        <div>Chargement des entreprises...</div> // TODO: loader visuel
+        <div>Chargement des utilisateurs...</div> // TODO: loader visuel
       ) : (
         <>
-          <EntreprisesTable data={entreprises} />
+          <UsersTable data={users} />
 
           <div className="flex justify-around gap-2 mt-4">
             <button

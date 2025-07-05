@@ -25,8 +25,8 @@ export default function Sidebar() {
     if (userRole === "admin") {
       setNavItems([
         { name: "Tickets", path: "/dashboard/tickets" },
-        { name: "Messages", path: "/dashboard/messages" },
-        { name: "Utilisateurs", path: "/dashboard/utilisateurs" },
+        { name: "Messages", path: "/dashboard/admin/messages" },
+        { name: "Utilisateurs", path: "/dashboard/admin/utilisateurs" },
         { name: "Entreprises", path: "/dashboard/admin/entreprises" },
       ]);
     } else {
