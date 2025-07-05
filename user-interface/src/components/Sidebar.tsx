@@ -27,7 +27,7 @@ export default function Sidebar() {
         { name: "Tickets", path: "/dashboard/tickets" },
         { name: "Messages", path: "/dashboard/messages" },
         { name: "Utilisateurs", path: "/dashboard/utilisateurs" },
-        { name: "Entreprises", path: "/dashboard/entreprises" },
+        { name: "Entreprises", path: "/dashboard/admin/entreprises" },
       ]);
     } else {
       setNavItems([
@@ -39,7 +39,7 @@ export default function Sidebar() {
 
   return (
     <aside className="flex flex-col justify-between items-center py-2">
-      <div className="font-bold">Tickets App</div>
+      <h1 className="font-bold">Tickets App</h1>
       <nav className="flex flex-col">
         {navItems.map((item) => (
           <Link

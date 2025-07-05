@@ -40,7 +40,7 @@ export default function TicketPage() {
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-semibold mb-4">Liste des tickets</h1>
+      <h2 className="text-xl font-semibold mb-4">Liste des tickets</h2>
       <div className="flex gap-4 mb-6">
         <input
           type="text"

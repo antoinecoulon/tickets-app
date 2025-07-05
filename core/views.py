@@ -74,3 +74,4 @@ class AdminEntrepriseListView(ListAPIView):
     permission_classes = [IsAdmin]
     serializer_class = EntrepriseSerializer
     queryset = Entreprise.objects.all()
+    ordering_fields = ['nom']
