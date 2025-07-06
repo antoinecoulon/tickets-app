@@ -12,6 +12,12 @@ class UserSummarySerializer(serializers.ModelSerializer):
 class TicketSerializer(serializers.ModelSerializer):
     client = UserSummarySerializer(read_only=True)
     agent = UserSummarySerializer(read_only=True)
+    agent_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.filter(role='agent'),
+        source='agent',
+        write_only=True,
+        required=False
+    )
     
     class Meta:
         model = Ticket

@@ -3,16 +3,19 @@
 import api from "@/lib/axios";
 import { useUserStore } from "@/store/userStore";
 import { Ticket } from "@/types/Ticket";
+import { User } from "@/types/User";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export default function EditTicketPage() {
+  const router = useRouter()
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<Partial<Ticket>>()
     const { id } = useParams()
-    const router = useRouter()
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm<Ticket>()
-    const [isLoading, setIsLoading] = useState<boolean>(true)
     const userRole = useUserStore((state) => state.role)
+
+    const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [agents, setAgents] = useState<{id: number, username: string}[]>([])
 
     useEffect(() => {
         const fetchTicket = async () => {
@@ -23,6 +26,7 @@ export default function EditTicketPage() {
                 setValue("description", ticket.description)
                 setValue("priorite", ticket.priorite)
                 setValue("statut", ticket.statut)
+                setValue("agent_id", ticket.agent?.id ?? "")
             } catch (err: any) {
                 console.error("Erreur lors du chargement du ticket: ", err)
                 router.push("/dashboard/tickets")
@@ -33,6 +37,14 @@ export default function EditTicketPage() {
 
         fetchTicket()
     }, [id, setValue, router])
+
+    useEffect(() => {
+      if (userRole === "admin" || userRole === "agent") {
+        api.get("/auth/agents/").then((response) => {
+          setAgents(response.data)
+        })
+      }
+    }, [])
 
     const onSubmit = async (data: Partial<Ticket>) => {
         try {
@@ -71,7 +83,9 @@ export default function EditTicketPage() {
           </select>
         </div>
 
-        {userRole === "agent" && <div>
+        {["agent", "admin"].includes(userRole!) && 
+        <div>
+          <div>
           <label className="block font-medium">Statut</label>
           <select {...register("statut", { required: true })} className="input">
             <option value="ouvert">Ouvert</option>
@@ -79,7 +93,20 @@ export default function EditTicketPage() {
             <option value="resolu">Résolu</option>
             <option value="ferme">Fermé</option>
           </select>
-        </div>}
+          </div>
+          <div>
+          <label className="block font-medium">Assigner un agent</label>
+          <select {...register("agent_id", { required: false })} className="input">
+            <option value="">Non assigné</option>
+            {agents.map((agent) => (
+              <option key={agent.id} value={agent.id}>
+                {agent.username}
+              </option>
+            ))}
+          </select>
+          </div>
+        </div>
+        }
 
         <button
           type="submit"

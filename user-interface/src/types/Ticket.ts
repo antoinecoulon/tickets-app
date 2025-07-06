@@ -14,5 +14,6 @@ export type Ticket = {
         username: string
         email: string
     }
+    agent_id: number
     createdAt: string
 }
