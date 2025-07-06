@@ -1,20 +1,8 @@
 "use client";
 
+import Loader from "@/components/Loader";
 import api from "@/lib/axios";
 import { useEffect, useState } from "react";
-
-type Stats = {
-    tickets_total: number
-    agents_total: number
-    clients_total: number
-    entreprises_total: 3,
-    tickets_by_statut: {
-        ouvert: 8,
-        en_cours: 2,
-        resolu: 0,
-        ferme: 1
-    }
-}
 
 export default function AdminStatsPage() {
   const [stats, setStats] = useState<any>(null);
@@ -23,7 +11,7 @@ export default function AdminStatsPage() {
     api.get("/admin/stats/").then((response) => setStats(response.data));
   }, []);
 
-  if (!stats) return <div>Chargement des statistiques...</div>;
+  if (!stats) return <Loader />
 
   return (
     <div className="p-4">

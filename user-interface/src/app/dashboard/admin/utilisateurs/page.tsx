@@ -4,6 +4,7 @@ import api from "@/lib/axios";
 import { User } from "@/types/User";
 import { useEffect, useState } from "react";
 import UsersTable from "./UsersTable";
+import Loader from "@/components/Loader";
 
 export default function MessagesPage() {
     const [users, setUsers] = useState<User[]>([])
@@ -38,7 +39,7 @@ export default function MessagesPage() {
       <h2 className="text-xl font-semibold mb-4">Liste des messages</h2>
 
       {loading ? (
-        <div>Chargement des utilisateurs...</div> // TODO: loader visuel
+        <Loader />
       ) : (
         <>
           <UsersTable data={users} />

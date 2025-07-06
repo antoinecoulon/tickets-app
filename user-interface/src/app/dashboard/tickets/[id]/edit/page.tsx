@@ -1,5 +1,6 @@
 "use client"
 
+import Loader from "@/components/Loader";
 import api from "@/lib/axios";
 import { useUserStore } from "@/store/userStore";
 import { Ticket } from "@/types/Ticket";
@@ -55,7 +56,7 @@ export default function EditTicketPage() {
         }
     }
 
-    if (isLoading) return <div>Chargement...</div> // TODO loader
+    if (isLoading) return <Loader />
 
     return (
         <div className="p-6 max-w-xl">

@@ -5,6 +5,7 @@ import { Ticket } from "@/types/Ticket";
 import { useEffect, useState } from "react";
 import TicketsTable from "./TicketsTable";
 import Link from "next/link";
+import Loader from "@/components/Loader";
 
 export default function TicketPage() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -75,7 +76,7 @@ export default function TicketPage() {
       </Link>
 
       {loading ? (
-        <div>Chargement des tickets...</div> // TODO: loader visuel
+        <Loader />
       ) : (
         <>
           <TicketsTable data={tickets} />

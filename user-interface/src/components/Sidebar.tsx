@@ -10,11 +10,6 @@ type NavItems = {
   name: string;
   path: string;
 };
-// TODO: Ajouter des liens selon le rôle
-// admin: tickets, messages, users (client + agent), entreprises
-  // flex colonne ^
-// client: mes tickets, mon entreprise
-// agent: tickets (de mon entreprise), mon entreprise
 
 export default function Sidebar() {
   const pathname = usePathname();

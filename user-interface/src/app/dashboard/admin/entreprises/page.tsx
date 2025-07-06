@@ -4,6 +4,7 @@ import api from "@/lib/axios";
 import { Entreprise } from "@/types/Entreprise";
 import { useEffect, useState } from "react";
 import EntreprisesTable from "./EntreprisesTable";
+import Loader from "@/components/Loader";
 
 export default function AdminEntreprisesPage() {
     const [entreprises, setEntreprises] = useState<Entreprise[]>([]);
@@ -38,7 +39,7 @@ export default function AdminEntreprisesPage() {
       <h2 className="text-xl font-semibold mb-4">Liste des entreprises</h2>
 
       {loading ? (
-        <div>Chargement des entreprises...</div> // TODO: loader visuel
+        <Loader />
       ) : (
         <>
           <EntreprisesTable data={entreprises} />

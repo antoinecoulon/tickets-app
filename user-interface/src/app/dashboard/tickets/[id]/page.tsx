@@ -16,6 +16,7 @@ import {
   getStatutStyle,
 } from "@/utils/ticketsBadges";
 import { useUserStore } from "@/store/userStore";
+import Loader from "@/components/Loader";
 
 export default function TicketDetailsPage() {
   const router = useRouter();
@@ -54,7 +55,7 @@ export default function TicketDetailsPage() {
     fetchMessages();
   }, [id]);
 
-  if (isLoading) return <div>Chargement en cours...</div>; // TODO: loader
+  if (isLoading) return <Loader />
 
   if (!ticket) return <div>Ticket introuvable</div>;
 

@@ -4,6 +4,7 @@ import api from "@/lib/axios";
 import { Message } from "@/types/Message";
 import { useEffect, useState } from "react";
 import MessagesTable from "./MessagesTable";
+import Loader from "@/components/Loader";
 
 export default function MessagesPage() {
     const [messages, setMessages] = useState<Message[]>([])
@@ -38,7 +39,7 @@ export default function MessagesPage() {
       <h2 className="text-xl font-semibold mb-4">Liste des messages</h2>
 
       {loading ? (
-        <div>Chargement des messages...</div> // TODO: loader visuel
+        <Loader />
       ) : (
         <>
           <MessagesTable data={messages} />

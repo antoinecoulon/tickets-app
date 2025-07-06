@@ -2,6 +2,7 @@
 
 import Header from "@/components/Header";
 import HydrationGate from "@/components/HydrationGate";
+import Loader from "@/components/Loader";
 import Sidebar from "@/components/Sidebar";
 import { useUserStore } from "@/store/userStore";
 import { useRouter } from "next/navigation";
@@ -36,9 +37,7 @@ export default function DashboardLayout({
 
   if (!checked) {
     return (
-      <div className="h-screen w-screen flex items-center justify-center">
-        <span className="text-gray-600">Chargement...</span>  {/* TODO: loader */}
-      </div>
+      <Loader />
     );
   }
   

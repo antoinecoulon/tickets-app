@@ -1,5 +1,6 @@
 "use client"
 
+import Loader from "@/components/Loader";
 import api from "@/lib/axios";
 import { Entreprise } from "@/types/Entreprise";
 import { useEffect, useState } from "react";
@@ -28,7 +29,7 @@ export default function EntreprisePage() {
       <h2 className="text-xl font-semibold mb-4">Mon entreprise</h2>
 
       {loading ? (
-        <div>Chargement de l'entreprise...</div> // TODO: loader visuel
+        <Loader />
       ) : (
         <>
           <h2>{entreprise?.nom}</h2>
