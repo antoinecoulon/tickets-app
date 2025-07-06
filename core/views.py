@@ -1,7 +1,7 @@
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from .models import Ticket, Message, Entreprise
 from users.models import User
 from .serializers import TicketSerializer, MessageSerializer, AdminUtilisateursListSerializer, EntrepriseSerializer
@@ -75,3 +75,12 @@ class AdminEntrepriseListView(ListAPIView):
     serializer_class = EntrepriseSerializer
     queryset = Entreprise.objects.all()
     ordering_fields = ['nom']
+
+class EntrepriseDetailView(RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = EntrepriseSerializer
+
+    def get_object(self):
+        user = self.request.user
+        entreprise = user.entreprise
+        return entreprise

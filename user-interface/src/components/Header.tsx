@@ -9,7 +9,6 @@ export default function Header() {
   const greetings = () => {
     const now = dayjs()
     const hour = now.hour()
-    console.log('rendering')
 
     if (hour > 7) {
       return `Bonjour, ${username} !`

@@ -32,7 +32,7 @@ export default function Sidebar() {
     } else {
       setNavItems([
         { name: "Tickets", path: "/dashboard/tickets" },
-        { name: "Entreprise", path: "/dashboard/entreprises" },
+        { name: "Entreprise", path: "/dashboard/entreprise" },
       ]);
     }
   }, [userRole]);
