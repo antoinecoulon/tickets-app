@@ -9,6 +9,7 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 type Props = {
@@ -17,6 +18,7 @@ type Props = {
 
 export default function TicketsTable({ data }: Props) {
   const [sorting, setSorting] = useState<SortingState>([]);
+  const router = useRouter()
 
   const columns = useMemo<ColumnDef<Ticket>[]>(
     () => [
@@ -137,7 +139,7 @@ export default function TicketsTable({ data }: Props) {
         </thead>
         <tbody className="divide-y divide-gray-200">
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="hover:bg-gray-50">
+            <tr key={row.id} className="hover:bg-gray-50 hover:cursor-pointer" onClick={() => router.push(`/dashboard/tickets/${row.original.id}`)}>
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="px-4 py-2">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
