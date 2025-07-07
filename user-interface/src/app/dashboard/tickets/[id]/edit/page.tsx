@@ -8,6 +8,7 @@ import { User } from "@/types/User";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 export default function EditTicketPage() {
   const router = useRouter()
@@ -50,6 +51,10 @@ export default function EditTicketPage() {
     const onSubmit = async (data: Partial<Ticket>) => {
         try {
             await api.patch(`/tickets/${id}/`, data)
+            toast.success("Ticket modifié avec succès", {
+              duration: 3000,
+              icon: "✅",
+            })
             router.push(`/dashboard/tickets/${id}`)
         } catch (err: any) {
             console.error("Erreur lors de la mise à jour du ticket: ", err)

@@ -6,12 +6,14 @@ import { useEffect, useState } from "react";
 import TicketsTable from "./TicketsTable";
 import Link from "next/link";
 import Loader from "@/components/Loader";
+import { useUserStore } from "@/store/userStore";
 
 export default function TicketPage() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState<boolean>(true);
+  const userRole = useUserStore((s) => s.role);
 
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
@@ -69,11 +71,13 @@ export default function TicketPage() {
           <option value="resolu">Résolu</option>
         </select>
       </div>
-      <Link href={"/dashboard/tickets/create"}>
-        <button className="p-4 mb-2 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 hover:cursor-pointer">
-          Nouveau ticket
-        </button>
-      </Link>
+      {userRole !== "agent" && (
+        <Link href={"/dashboard/tickets/create"}>
+          <button className="p-4 mb-2 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 hover:cursor-pointer">
+            Nouveau ticket
+          </button>
+        </Link>
+      )}
 
       {loading ? (
         <Loader />

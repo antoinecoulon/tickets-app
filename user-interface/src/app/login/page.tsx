@@ -4,6 +4,7 @@ import api from "@/lib/axios";
 import { useUserStore } from "@/store/userStore";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const [username, setUsername] = useState<string>("");
@@ -14,9 +15,9 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (localStorage.getItem("user-storage")) {
-      router.push("/dashboard")
+      router.push("/dashboard");
     }
-  }, [])
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,7 +38,17 @@ export default function LoginPage() {
         },
       });
 
-      setUser(access, refresh, userResponse.data.role, userResponse.data.username, userResponse.data.entreprise);
+      setUser(
+        access,
+        refresh,
+        userResponse.data.role,
+        userResponse.data.username,
+        userResponse.data.entreprise
+      );
+      toast.success("Connecté avec succès", {
+        duration: 3000,
+        icon: "✅",
+      });
       router.push("/dashboard");
     } catch (err: any) {
       console.error(err);

@@ -4,6 +4,7 @@ import api from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 type TicketFormInputs = {
     titre: string
@@ -20,7 +21,10 @@ export default function CreateTicketPage() {
         setSubmitError(null)
         try {
             const response = await api.post("/tickets/", data)
-            console.log(response)
+            toast.success("Ticket créé avec succès", {
+              duration: 3000,
+              icon: "✅",
+            })
             router.push("/dashboard/tickets")
         } catch (err: any) {
             console.error("Erreur lors de la création d'un ticket:", err)

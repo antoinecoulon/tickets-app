@@ -21,14 +21,14 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    const message = 
+    const message =
       error.response?.data?.detail ||
       error.response?.data?.message ||
-      "Une erreur s'est produite."
+      "Une erreur s'est produite.";
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      console.log("Token expired, use refresh token")
+      console.log("Token expired, use refresh token");
       const refreshToken = userStore.getState().refreshToken;
 
       try {
@@ -39,22 +39,24 @@ api.interceptors.response.use(
 
         const newAccess = data.access;
         userStore.setState({ token: newAccess });
-        console.log("Used refresh token successfully")
+        console.log("Used refresh token successfully");
         originalRequest.headers.Authorization = `Bearer ${newAccess}`;
         return api(originalRequest);
       } catch (err) {
         userStore.getState().logout();
-        toast.error("Session expirée, veuillez vous reconnecter.")
+        toast.error("Session expirée, veuillez vous reconnecter.");
         return Promise.reject(error);
       }
     } else if (error.response?.status === 403) {
-      toast.error("Accès non autorisé.")
+      toast.error("Accès non autorisé.");
+      return Promise.reject(error);
     } else if (error.response?.status === 404) {
-      toast.error("Page non trouvée.")
+      toast.error("Page non trouvée.");
+      return Promise.reject(error);
     } else {
-      toast.error(message)
+      toast.error(message);
+      return Promise.reject(error);
     }
-    return Promise.reject(error);
   }
 );
 
