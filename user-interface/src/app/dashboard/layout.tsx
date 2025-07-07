@@ -17,6 +17,7 @@ export default function DashboardLayout({
   const token = useUserStore((state) => state.token)
 
   const [checked, setChecked] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
   useEffect(() => {
     // Evite le 'flicker' du premier render (on ne sait pas encore si user logged)
@@ -44,9 +45,9 @@ export default function DashboardLayout({
   return (
     <HydrationGate>
       <div className="flex h-screen bg-gray-100 text-gray-900">
-        <Sidebar />
+        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <div className="flex flex-col flex-1">
-          <Header />
+          <Header setSidebarOpen={setSidebarOpen} />
           <main className="flex-1 overflow-y-auto p-6">{children}</main>
         </div>
       </div>

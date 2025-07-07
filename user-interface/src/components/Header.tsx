@@ -3,8 +3,13 @@
 import { useUserStore } from "@/store/userStore";
 import dayjs from "dayjs";
 
-export default function Header() {
+type Props = {
+  setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export default function Header({ setSidebarOpen }: Props) {
   const username = useUserStore((state) => state.username)
+  
   
   const greetings = () => {
     const now = dayjs()
@@ -19,8 +24,14 @@ export default function Header() {
   
   return (
     <header className="h-16 bg-white border-b shadow-sm flex items-center px-6 justify-between">
-      <div className="text-lg font-semibold">Tableau de bord</div>
-      <div>{greetings()}</div>
+      <div className="text-sm md:text-lg font-semibold">Tableau de bord</div>
+      <button
+        onClick={() => setSidebarOpen(true)}
+        className="md:hidden p-2"
+      >
+        ☰
+      </button>
+      <div className="text-sm md:text-base">{greetings()}</div>
     </header>
   );
 }
