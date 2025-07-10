@@ -30,7 +30,7 @@ DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS').split(',')
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
+    'https://tickets-app-ui.vercel.app/',
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = ["*"]
